@@ -1,0 +1,5 @@
+name: ${project.artifactId}
+main: es.meriland.chat.bukkit.BukkitPlugin
+version: ${project.version}
+author: Cadiducho
+depend: [Vault]
