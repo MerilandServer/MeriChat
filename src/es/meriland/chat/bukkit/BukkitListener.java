@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -28,33 +29,37 @@ public class BukkitListener implements Listener, PluginMessageListener {
             if (!subchannel.equalsIgnoreCase("chat")) return;
             
             String text = in.readUTF();
-            String prefix = in.readUTF();
             int id = in.readInt();
-            processChatMessage(player, text, prefix, id);
+            processChatMessage(player, text, id);
         } catch (IOException ex) {
             Logger.getLogger(BukkitListener.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    private void processChatMessage(Player player, String text, String prefix, int id) throws IOException {
-        if (text.contains("%" + prefix + "group%")){
-            text = text.replace("%" + prefix + "group%", bukkitPlugin.getGroup(player));
+    private void processChatMessage(Player player, String text, int id) throws IOException {
+        if (text.contains("%" + "group%")){
+            text = text.replace("%"  + "group%", bukkitPlugin.getGroup(player));
         }
-        if (text.contains("%" + prefix + "prefix%")){
-            text = text.replace("%" + prefix + "prefix%", bukkitPlugin.getPrefix(player));
+        if (text.contains("%" + "prefix%")){
+            text = text.replace("%" + "prefix%", bukkitPlugin.getPrefix(player));
         }
-        if (text.contains("%" + prefix + "suffix%")){
-            text = text.replace("%" + prefix + "suffix%", bukkitPlugin.getSuffix(player));
+        if (text.contains("%" + "suffix%")){
+            text = text.replace("%" + "suffix%", bukkitPlugin.getSuffix(player));
         }
-        if (text.contains("%" + prefix + "tabName%")){
-            text = text.replace("%" + prefix + "tabName%", player.getPlayerListName());
+        if (text.contains("%" + "tabName%")){
+            text = text.replace("%" + "tabName%", player.getPlayerListName());
         }
-        if (text.contains("%" + prefix + "displayName%")){
-            text = text.replace("%" + prefix + "displayName%", player.getDisplayName());
+        if (text.contains("%" + "displayName%")){
+            text = text.replace("%" + "displayName%", player.getDisplayName());
         }
-        if (text.contains("%" + prefix + "world%")){
-            text = text.replace("%" + prefix + "world%", player.getWorld().getName());
+        if (text.contains("%" + "world%")){
+            text = text.replace("%" + "world%", player.getWorld().getName());
         }
+        
+        if (player.isOp()) {
+            text = ChatColor.translateAlternateColorCodes('&', text);
+        }
+        
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (DataOutputStream outputStream1 = new DataOutputStream(outputStream)) {
             outputStream1.writeUTF("chat");

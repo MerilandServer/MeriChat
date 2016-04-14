@@ -42,7 +42,7 @@ public class BungeeListener implements Listener {
                 String texto = event.getMessage();
                 
                 //añadir nombre, rangos, colores y demás al mensaje
-
+                texto = replaceVariables(((ProxiedPlayer) event.getSender()),"[%group%] %displayName%:" + texto);
                 BaseComponent msg = parse(texto);
                 plugin.getProxy().getPlayers().forEach(target -> target.sendMessage(msg));
             } catch (Throwable th) {
@@ -87,9 +87,9 @@ public class BungeeListener implements Listener {
         }
     }
     
-    public String replaceVariables(ProxiedPlayer player, String text, String prefix) throws InterruptedException {
+    public String replaceVariables(ProxiedPlayer player, String text) throws InterruptedException {
         int tries = 0;
-        while(text.matches("^.*%" + prefix + "(group|prefix|suffix|tabName|displayName|world)%.*$") && tries < 3){
+        while(text.matches("^.*%"  + "(group|prefix|suffix|tabName|displayName|world)%.*$") && tries < 3){
             try {
                 int id = getId();
                 if(buffer.containsKey(id))buffer.remove(id);
@@ -97,7 +97,6 @@ public class BungeeListener implements Listener {
                 DataOutputStream outputStream1 = new DataOutputStream(outputStream);
                 outputStream1.writeUTF("chat");
                 outputStream1.writeUTF(text);
-                outputStream1.writeUTF(prefix);
                 outputStream1.writeInt(id);
                 outputStream1.flush();
                 outputStream1.close();
@@ -120,7 +119,7 @@ public class BungeeListener implements Listener {
         if(tries > 0){
             throw new RuntimeException("Error procesando el mensaje de "+player.getName());
         }
-        text = text.replace("%" + prefix + "server%", (player.getServer() != null ? player.getServer().getInfo().getName() : "unknown"));
+        text = text.replace("%" + "server%", (player.getServer() != null ? player.getServer().getInfo().getName() : "unknown"));
         return text;
     }
     
