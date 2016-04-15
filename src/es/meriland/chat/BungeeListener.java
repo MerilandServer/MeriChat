@@ -1,6 +1,5 @@
 package es.meriland.chat;
 
-import java.io.DataInputStream;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.event.EventPriority;
@@ -9,12 +8,13 @@ import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.api.chat.TextComponent;
 
 import java.io.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
+import java.io.DataInputStream;
+
 
 public class BungeeListener implements Listener {
     
@@ -37,14 +37,12 @@ public class BungeeListener implements Listener {
         if (event.isCommand()) return;
 
         event.setCancelled(true);
-        plugin.getProxy().getLogger().info("cancelado");
-
         plugin.getProxy().getScheduler().runAsync(plugin, () -> sendChat((ProxiedPlayer) event.getSender(), event.getMessage()));
     }
     
     public void sendChat(ProxiedPlayer player, String mensaje) {
         try {
-            String texto = /*"[%group%]*/" %displayName%: " + mensaje;
+            String texto = "%prefix%%displayName%%suffix%&f: " + mensaje;
             texto = replaceVariables(player, texto);
 
             BaseComponent msg = parse(texto);
@@ -58,8 +56,6 @@ public class BungeeListener implements Listener {
     }
     
     public static BaseComponent parse(String text) {
-        text = ChatColor.translateAlternateColorCodes('&', text);
-
         return new TextComponent(text);
     }
     
@@ -68,7 +64,6 @@ public class BungeeListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPluginMessage(PluginMessageEvent event) {
-        plugin.getProxy().getLogger().info("He recibido algo... "+event.getTag());
         if (event.getTag().equals("MeriChat")) {
             event.setCancelled(true);
             if (event.getReceiver() instanceof ProxiedPlayer && event.getSender() instanceof Server) {
@@ -77,14 +72,12 @@ public class BungeeListener implements Listener {
 
                     DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
                     String subchannel = in.readUTF();
-                    plugin.getProxy().getLogger().info("Buffer recibido");
                     if(subchannel.equals("chat")){
                         buffer.put(in.readInt(), in.readUTF());
                     }
 
                 } catch (IOException ex) {
-                    plugin.getLogger().log(Level.SEVERE,
-                            "Exception while parsing data from Bukkit", ex);
+                    plugin.getLogger().log(Level.SEVERE, "Error obtieniendo los datos de Bukkit", ex);
                 }
             }
         }
@@ -92,8 +85,7 @@ public class BungeeListener implements Listener {
     
     public String replaceVariables(ProxiedPlayer player, String text) {
         int tries = 0;
-        while(text.matches("^.*%"  + "(group|prefix|suffix|tabName|displayName|world)%.*$") && tries < 3){
-            plugin.getProxy().getLogger().info("remplazando... "+tries);
+        while(text.matches("^.*%"  + "(group|prefix|suffix|displayName)%.*$") && tries < 3){
             try {
                 int id = getId();
                 if (buffer.containsKey(id)) buffer.remove(id);

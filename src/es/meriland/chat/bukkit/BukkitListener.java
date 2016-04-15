@@ -1,12 +1,9 @@
 package es.meriland.chat.bukkit;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -29,7 +26,6 @@ public class BukkitListener implements Listener, PluginMessageListener {
 	try {
             String subChannel = in.readUTF();
             if (subChannel.equalsIgnoreCase("chat")) {
-		bukkitPlugin.getLogger().info("Mensaje recibido...");
                 String text = in.readUTF();
                 int id = in.readInt(); 
                 processChatMessage(player, text, id);
@@ -42,30 +38,22 @@ public class BukkitListener implements Listener, PluginMessageListener {
     
     private void processChatMessage(Player player, String text, int id) throws IOException {
         if (text.contains("%" + "group%")){
-            text = text.replace("%"  + "group%", bukkitPlugin.getGroup(player));
+            text = text.replace("%"  + "group%", c(bukkitPlugin.getGroup(player)));
         }
         if (text.contains("%" + "prefix%")){
-            text = text.replace("%" + "prefix%", bukkitPlugin.getPrefix(player));
+            text = text.replace("%" + "prefix%", c(bukkitPlugin.getPrefix(player)));
         }
         if (text.contains("%" + "suffix%")){
-            text = text.replace("%" + "suffix%", bukkitPlugin.getSuffix(player));
-        }
-        if (text.contains("%" + "tabName%")){
-            text = text.replace("%" + "tabName%", player.getPlayerListName());
+            text = text.replace("%" + "suffix%", c(bukkitPlugin.getSuffix(player)));
         }
         if (text.contains("%" + "displayName%")){
-            text = text.replace("%" + "displayName%", player.getDisplayName());
-        }
-        if (text.contains("%" + "world%")){
-            text = text.replace("%" + "world%", player.getWorld().getName());
+            text = text.replace("%" + "displayName%", c(player.getDisplayName()));
         }
         
-        if (player.isOp()) {
-            text = ChatColor.translateAlternateColorCodes('&', text);
+        if (player.hasPermission("MeriChat.colores")) {
+            text = c(text);
         }
-        
-        bukkitPlugin.getLogger().info("Mensaje procesado, reenviando...");
-        bukkitPlugin.getLogger().info(text);
+
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(b);
             
@@ -76,6 +64,9 @@ public class BukkitListener implements Listener, PluginMessageListener {
         out.close();
         
         player.sendPluginMessage(bukkitPlugin, "MeriChat", b.toByteArray());
-        bukkitPlugin.getLogger().info("Enviado.");
+    }
+    
+    String c(String s) {
+        return ChatColor.translateAlternateColorCodes('&', s);
     }
 }
