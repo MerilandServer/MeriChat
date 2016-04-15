@@ -10,10 +10,10 @@ public class MeriChat extends Plugin implements Listener {
     
     @Override
     public void onEnable() {
-        instance = this;
-        
+        instance = this;        
         bungeeListener = new BungeeListener(instance);
         
+        getProxy().registerChannel("MeriChat");
         getProxy().getPluginManager().registerListener(this, bungeeListener);
-    } 
+    }
 }

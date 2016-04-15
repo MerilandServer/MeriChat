@@ -1,12 +1,13 @@
 package es.meriland.chat.bukkit;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -21,19 +22,22 @@ public class BukkitListener implements Listener, PluginMessageListener {
     }
 
     @Override
-    public void onPluginMessageReceived(String string, Player player, byte[] bytes) {
-        try {
-            DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
-            
-            String subchannel = in.readUTF();
-            if (!subchannel.equalsIgnoreCase("chat")) return;
-            
-            String text = in.readUTF();
-            int id = in.readInt();
-            processChatMessage(player, text, id);
-        } catch (IOException ex) {
-            Logger.getLogger(BukkitListener.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void onPluginMessageReceived(String channel, Player player, byte[] bytes) {
+        if (!channel.equalsIgnoreCase("MeriChat")) return;
+        
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
+	try {
+            String subChannel = in.readUTF();
+            if (subChannel.equalsIgnoreCase("chat")) {
+		bukkitPlugin.getLogger().info("Mensaje recibido...");
+                String text = in.readUTF();
+                int id = in.readInt(); 
+                processChatMessage(player, text, id);
+            }
+        } catch(IOException e) {
+            bukkitPlugin.getLogger().info("Error enviando un mensaje: ");
+            e.printStackTrace();
+	}
     }
     
     private void processChatMessage(Player player, String text, int id) throws IOException {
@@ -60,13 +64,18 @@ public class BukkitListener implements Listener, PluginMessageListener {
             text = ChatColor.translateAlternateColorCodes('&', text);
         }
         
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (DataOutputStream outputStream1 = new DataOutputStream(outputStream)) {
-            outputStream1.writeUTF("chat");
-            outputStream1.writeInt(id);
-            outputStream1.writeUTF(text);
-            outputStream1.flush();
-        }
-        player.sendPluginMessage(bukkitPlugin, "MeriChat", outputStream.toByteArray());
+        bukkitPlugin.getLogger().info("Mensaje procesado, reenviando...");
+        bukkitPlugin.getLogger().info(text);
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(b);
+            
+        out.writeUTF("chat");
+        out.writeInt(id);
+        out.writeUTF(text);
+        out.flush();
+        out.close();
+        
+        player.sendPluginMessage(bukkitPlugin, "MeriChat", b.toByteArray());
+        bukkitPlugin.getLogger().info("Enviado.");
     }
 }
