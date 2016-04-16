@@ -1,5 +1,6 @@
 package es.meriland.chat.bukkit;
 
+import es.meriland.chat.MeriChat;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -20,12 +21,12 @@ public class BukkitListener implements Listener, PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] bytes) {
-        if (!channel.equalsIgnoreCase("MeriChat")) return;
+        if (!channel.equalsIgnoreCase(MeriChat.MAIN_CHANNEL)) return;
         
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
 	try {
             String subChannel = in.readUTF();
-            if (subChannel.equalsIgnoreCase("chat")) {
+            if (subChannel.equalsIgnoreCase(MeriChat.MAIN_SUBCHANNEL)) {
                 String text = in.readUTF();
                 int id = in.readInt(); 
                 processChatMessage(player, text, id);
@@ -57,13 +58,13 @@ public class BukkitListener implements Listener, PluginMessageListener {
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(b);
             
-        out.writeUTF("chat");
+        out.writeUTF(MeriChat.MAIN_SUBCHANNEL);
         out.writeInt(id);
         out.writeUTF(text);
         out.flush();
         out.close();
         
-        player.sendPluginMessage(bukkitPlugin, "MeriChat", b.toByteArray());
+        player.sendPluginMessage(bukkitPlugin, MeriChat.MAIN_CHANNEL, b.toByteArray());
     }
     
     String c(String s) {

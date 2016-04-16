@@ -14,6 +14,11 @@ import java.io.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.io.DataInputStream;
+import java.util.LinkedList;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.protocol.packet.Title;
 
 
 public class BungeeListener implements Listener {
@@ -42,7 +47,7 @@ public class BungeeListener implements Listener {
     
     public void sendChat(ProxiedPlayer player, String mensaje) {
         try {
-            String texto = "%prefix%%displayName%%suffix%&f: " + mensaje;
+            String texto = "%prefix%%displayName%%suffix%: " + mensaje;
             texto = replaceVariables(player, texto);
 
             BaseComponent msg = parse(texto);
@@ -64,7 +69,7 @@ public class BungeeListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPluginMessage(PluginMessageEvent event) {
-        if (event.getTag().equals("MeriChat")) {
+        if (event.getTag().equals(MeriChat.MAIN_CHANNEL)) {
             event.setCancelled(true);
             if (event.getReceiver() instanceof ProxiedPlayer && event.getSender() instanceof Server) {
                 try {
@@ -72,7 +77,7 @@ public class BungeeListener implements Listener {
 
                     DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
                     String subchannel = in.readUTF();
-                    if(subchannel.equals("chat")){
+                    if(subchannel.equals(MeriChat.MAIN_SUBCHANNEL)){
                         buffer.put(in.readInt(), in.readUTF());
                     }
 
@@ -91,12 +96,12 @@ public class BungeeListener implements Listener {
                 if (buffer.containsKey(id)) buffer.remove(id);
                 ByteArrayOutputStream b = new ByteArrayOutputStream();
                 DataOutputStream out = new DataOutputStream(b);
-                out.writeUTF("chat");
+                out.writeUTF(MeriChat.MAIN_SUBCHANNEL);
                 out.writeUTF(text);
                 out.writeInt(id);
                 out.flush();
                 out.close();
-                player.getServer().sendData("MeriChat", b.toByteArray());
+                player.getServer().sendData(MeriChat.MAIN_CHANNEL, b.toByteArray());
                 for (int i = 0; i < 10 && !buffer.containsKey(id); i++) {
                     Thread.sleep(100);
                 }
@@ -117,7 +122,6 @@ public class BungeeListener implements Listener {
         if(tries > 0){
             throw new RuntimeException("Error procesando el mensaje de "+player.getName());
         }
-        text = text.replace("%" + "server%", player.getServer() != null ? player.getServer().getInfo().getName() : "unknown");
         return text;
     }
     

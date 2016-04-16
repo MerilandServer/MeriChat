@@ -1,5 +1,6 @@
 package es.meriland.chat.bukkit;
 
+import es.meriland.chat.MeriChat;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -20,38 +21,28 @@ public class BukkitPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
 
         bukkitListener = new BukkitListener(this);
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "MeriChat");
-        getServer().getMessenger().registerIncomingPluginChannel(this, "MeriChat", bukkitListener);
+        getServer().getMessenger().registerOutgoingPluginChannel(this, MeriChat.MAIN_CHANNEL);
+        getServer().getMessenger().registerIncomingPluginChannel(this, MeriChat.MAIN_CHANNEL, bukkitListener);
         getServer().getPluginManager().registerEvents(this, this);
 
         Plugin vault = getServer().getPluginManager().getPlugin("Vault");
         if (vault != null) {
-            setupPermissions();
-            setupChat();
+            setupVault();
         }
     }
     
-    private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> permissionProvider = Bukkit.
-                getServer().getServicesManager().getRegistration(
-                        net.milkbowl.vault.permission.Permission.class);
+    private void setupVault() {
+        RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+        RegisteredServiceProvider<Chat> chatProvider = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
+        
         if (permissionProvider != null) {
             permission = permissionProvider.getProvider();
         }
-        return (permission != null);
-    }
-
-    private boolean setupChat() {
-        RegisteredServiceProvider<Chat> chatProvider = Bukkit.getServer().
-                getServicesManager().getRegistration(
-                        net.milkbowl.vault.chat.Chat.class);
         if (chatProvider != null) {
             chat = chatProvider.getProvider();
         }
-
-        return (chat != null);
     }
-    
+
     public String getGroup(Player player){
         try {
             if (permission != null && permission.getPrimaryGroup(player) != null) {
