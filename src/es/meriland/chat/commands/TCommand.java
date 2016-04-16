@@ -14,7 +14,7 @@ public class TCommand extends Command {
     private static BungeeListener listener;
     
     public TCommand(MeriChat This) {
-        super("tell", "merichat.tell", "w", "r", "msg");
+        super("tell", "merichat.tell", "w", "msg");
         this.plugin = plugin;
     }
 
@@ -54,6 +54,8 @@ public class TCommand extends Command {
         
         //Mensaje enviado y replicado al sender.
         p.sendMessage("Para " + target.getName() + ChatColor.LIGHT_PURPLE + ": " + mensajeFinal);
+        
+        RCommand.replyTargetU.put(target.getUniqueId(), target.getUniqueId());
     }
     
 }
