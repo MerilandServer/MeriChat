@@ -1,5 +1,6 @@
 package es.meriland.chat;
 
+import es.meriland.chat.commands.IgnoreCmd;
 import es.meriland.chat.commands.RCommand;
 import es.meriland.chat.commands.TCommand;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class MeriChat extends Plugin implements Listener {
     public void onEnable() {
         instance = this;        
         bungeeListener = new BungeeListener(instance);
+        getProxy().getPluginManager().registerCommand(this, new IgnoreCmd(this));
         getProxy().getPluginManager().registerCommand(this, new RCommand(this));
         getProxy().getPluginManager().registerCommand(this, new TCommand(this));
         getProxy().registerChannel(MAIN_CHANNEL);
