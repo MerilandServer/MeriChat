@@ -29,6 +29,12 @@ public class MeriChat extends Plugin implements Listener {
         getProxy().getPluginManager().registerListener(this, bungeeListener);
     }
     
+    public static void setReply(UUID user, UUID replyTo) {
+        if (replyTarget.containsKey(user)) replyTarget.remove(user);
+        
+        replyTarget.put(user, replyTo);
+    }
+    
     public static BaseComponent[] parse(String text) {
         return TextComponent.fromLegacyText(text);
     }

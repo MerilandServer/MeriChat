@@ -1,6 +1,5 @@
 package es.meriland.chat.commands;
 
-import es.meriland.chat.BungeeListener;
 import es.meriland.chat.MeriChat;
 import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
@@ -52,8 +51,9 @@ public class RCommand extends Command {
 
         //Respondemos al ultimo mensaje enviado.
         target.sendMessage(MeriChat.parse("De " + sender.getName() +ChatColor.LIGHT_PURPLE + ": " + textoFinal));
-        sender.sendMessage(MeriChat.parse("Para " + sender.getName() +ChatColor.LIGHT_PURPLE + ": " + textoFinal));
-
+        sender.sendMessage(MeriChat.parse("Para " + target.getName() +ChatColor.LIGHT_PURPLE + ": " + textoFinal));
+        
+        MeriChat.setReply(target.getUniqueId(), p.getUniqueId());
     }
     
 }
