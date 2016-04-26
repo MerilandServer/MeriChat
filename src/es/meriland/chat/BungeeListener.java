@@ -14,12 +14,8 @@ import java.io.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.io.DataInputStream;
-import java.util.LinkedList;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.protocol.packet.Title;
-
+import java.util.UUID;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 
 public class BungeeListener implements Listener {
     
@@ -30,6 +26,12 @@ public class BungeeListener implements Listener {
     
     public BungeeListener(MeriChat instance) {
         plugin = instance;
+    }
+    
+    @EventHandler
+    public void onDisconnect(PlayerDisconnectEvent event) {
+        UUID uuid = event.getPlayer().getUniqueId();
+        if (MeriChat.replyTarget.containsKey(uuid)) MeriChat.replyTarget.remove(uuid);
     }
     
     /*
