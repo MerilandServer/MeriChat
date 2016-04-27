@@ -5,12 +5,11 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class BukkitPlugin extends JavaPlugin implements Listener {
+public class BukkitPlugin extends JavaPlugin {
 
     private BukkitListener bukkitListener;
     
@@ -19,11 +18,9 @@ public class BukkitPlugin extends JavaPlugin implements Listener {
     
     @Override
     public void onEnable() {
-
         bukkitListener = new BukkitListener(this);
         getServer().getMessenger().registerOutgoingPluginChannel(this, MeriChat.MAIN_CHANNEL);
-        getServer().getMessenger().registerIncomingPluginChannel(this, MeriChat.MAIN_CHANNEL, bukkitListener);
-        getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(bukkitListener, this);
 
         Plugin vault = getServer().getPluginManager().getPlugin("Vault");
         if (vault != null) {
