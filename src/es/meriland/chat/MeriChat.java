@@ -34,8 +34,4 @@ public class MeriChat extends Plugin implements Listener {
         
         replyTarget.put(user, replyTo);
     }
-    
-    public static BaseComponent[] parse(String text) {
-        return TextComponent.fromLegacyText(text);
-    }
 }

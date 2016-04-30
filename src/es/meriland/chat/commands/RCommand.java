@@ -1,6 +1,7 @@
 package es.meriland.chat.commands;
 
 import es.meriland.chat.MeriChat;
+import es.meriland.chat.Parser;
 import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -27,19 +28,19 @@ public class RCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!(sender instanceof ProxiedPlayer)){
-            sender.sendMessage(MeriChat.parse("No puedes responder desde consola!"));
+            sender.sendMessage(Parser.parse("No puedes responder desde consola!"));
             return;
         }
         
         ProxiedPlayer p = (ProxiedPlayer) sender;
         ProxiedPlayer target = getReplyTarget(p);
         if(target == null){
-            sender.sendMessage(MeriChat.parse("Nadie te ha enviado un mensaje!"));
+            sender.sendMessage(Parser.parse("Nadie te ha enviado un mensaje!"));
             return;
         }
         
         if(args.length == 0){
-            sender.sendMessage(MeriChat.parse("Usa /r <mensaje>"));
+            sender.sendMessage(Parser.parse("Usa /r <mensaje>"));
             return;
         }
 
@@ -50,8 +51,8 @@ public class RCommand extends Command {
         String textoFinal = text;
 
         //Respondemos al ultimo mensaje enviado.
-        target.sendMessage(MeriChat.parse("De " + sender.getName() +ChatColor.LIGHT_PURPLE + ": " + textoFinal));
-        sender.sendMessage(MeriChat.parse("Para " + target.getName() +ChatColor.LIGHT_PURPLE + ": " + textoFinal));
+        target.sendMessage(Parser.parse("De " + sender.getName() + ChatColor.LIGHT_PURPLE + ": " + textoFinal));
+        sender.sendMessage(Parser.parse("Para " + target.getName() + ChatColor.LIGHT_PURPLE + ": " + textoFinal));
         
         MeriChat.setReply(target.getUniqueId(), p.getUniqueId());
     }

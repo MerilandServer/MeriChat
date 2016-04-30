@@ -7,7 +7,6 @@ import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import net.md_5.bungee.api.chat.TextComponent;
 
 import java.io.*;
 import java.util.logging.Level;
@@ -31,18 +30,14 @@ public class BungeeListener implements Listener {
     
     public void sendChat(ProxiedPlayer player, String mensaje) {
         try {
-            BaseComponent msg = parse(mensaje);
+            BaseComponent[] msg = Parser.parse(mensaje);
             plugin.getProxy().getPlayers().forEach(target -> target.sendMessage(msg));
         } catch (Throwable th) {
             try {
-                player.sendMessage(parse("&cError interno procesando el mensaje."));
+                player.sendMessage(Parser.parse("&cError interno procesando el mensaje."));
             } catch (Throwable ignored) {}
             plugin.getLogger().log(Level.SEVERE, "Error procensando el mensaje", th);
         }
-    }
-    
-    public static BaseComponent parse(String text) {
-        return new TextComponent(text);
     }
     
     /*
