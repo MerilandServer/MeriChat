@@ -3,3 +3,8 @@ main: es.meriland.chat.bukkit.BukkitPlugin
 version: ${project.version}
 author: Cadiducho
 depend: [Vault]
+commands:
+    tell:
+        aliases: ["w", "m", "msg"]
+    r:
+        aliases: ["reply"]
