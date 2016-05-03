@@ -11,6 +11,7 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.*;
 import java.util.logging.Level;
 import java.io.DataInputStream;
+import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 
@@ -25,9 +26,9 @@ public class BungeeListener implements Listener {
     public void processChat(ProxiedPlayer player, String mensaje) {
         if (plugin.chatsActivados.containsKey(player.getUniqueId())) {
             ProxiedPlayer chat = plugin.getProxy().getPlayer(plugin.chatsActivados.get(player.getUniqueId()));
-            sendPrivateMessage(chat, player, mensaje.split("\u00A8")[1]);
+            sendPrivateMessage(chat, player, mensaje.split(MeriChat.CHAR)[1]);
         } else {
-            sendChat(player, mensaje.replace("\u00A8", ""));
+            sendChat(player, mensaje.replace(MeriChat.CHAR, ""));
         }
     }
     
@@ -51,7 +52,17 @@ public class BungeeListener implements Listener {
             }
             return;
         }
-        ProxiedPlayer target = plugin.getProxy().getPlayer(targetS);
+        
+        ProxiedPlayer target = plugin.getProxy().getPlayer(targetS); 
+        if (targetS.equals(MeriChat.CHAR + "reply")) {
+            UUID targetId = plugin.replyTarget.get(from.getUniqueId());
+            if(targetId == null){
+                from.sendMessage(Parser.parse(c("Nadie te ha enviado un mensaje!")));
+                return;
+            }
+            target = plugin.getProxy().getPlayer(targetId);
+        }
+        
         if (target == null) {
             from.sendMessage(Parser.parse(c("&c¡Jugador no encontrado!")));
             return;
@@ -79,7 +90,8 @@ public class BungeeListener implements Listener {
     public void sendPrivateMessage(ProxiedPlayer target, ProxiedPlayer from, String mensaje) {
         String msg = c("[&b" + from.getName() + " &f-> &e" + target.getName() + "&f]: &d" + mensaje);
         target.sendMessage(Parser.parse(msg));
-        from.sendMessage(Parser.parse(msg));     
+        from.sendMessage(Parser.parse(msg));
+        plugin.setReply(target.getUniqueId(), from.getUniqueId());
     }
     
     /*
@@ -111,6 +123,7 @@ public class BungeeListener implements Listener {
     public void onDisconnect(PlayerDisconnectEvent event) {
         ProxiedPlayer p = event.getPlayer();
         if (plugin.chatsActivados.containsKey(p.getUniqueId())) plugin.chatsActivados.remove(p.getUniqueId());
+        if (plugin.replyTarget.containsKey(p.getUniqueId())) plugin.replyTarget.remove(p.getUniqueId());
     }
     
     public String c(String str) {

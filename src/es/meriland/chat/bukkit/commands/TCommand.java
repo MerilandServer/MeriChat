@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class TCommand implements CommandExecutor {
 
@@ -15,7 +14,6 @@ public class TCommand implements CommandExecutor {
 
     public TCommand(BukkitPlugin instance) {
         plugin = instance;
-        plugin.getCommand("tell").setExecutor(this);
     }
 
     @Override
@@ -35,11 +33,7 @@ public class TCommand implements CommandExecutor {
         }
         
         try {
-            plugin.sendPrivateMessage(target, sender.getName(), mensaje);
-            if (sender instanceof Player) {
-                Player p = (Player) sender;
-                plugin.setReply(plugin.getServer().getOfflinePlayer(target).getUniqueId(), p.getUniqueId());
-            }     
+            plugin.sendPrivateMessage(target, sender.getName(), mensaje); 
         } catch (IOException ex) {
             sender.sendMessage("Ha ocurrido un error enviando el mensaje");
             plugin.getLogger().log(Level.INFO, "Error enviando un mensaje privado: {0}", ex.toString());

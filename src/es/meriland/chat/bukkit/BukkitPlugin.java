@@ -6,10 +6,7 @@ import es.meriland.chat.bukkit.commands.TCommand;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.UUID;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -19,8 +16,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BukkitPlugin extends JavaPlugin {
-
-    public final HashMap<UUID, UUID> replyTarget = new HashMap<>(); 
+ 
     private BukkitListener bukkitListener;
 
     public static Permission permission = null;
@@ -31,8 +27,8 @@ public class BukkitPlugin extends JavaPlugin {
         bukkitListener = new BukkitListener(this);
         getServer().getMessenger().registerOutgoingPluginChannel(this, MeriChat.MAIN_CHANNEL);
         getServer().getPluginManager().registerEvents(bukkitListener, this);
-        TCommand tCommand = new TCommand(this);
-        RCommand rCommand = new RCommand(this);
+        getCommand("tell").setExecutor(new TCommand(this));
+        getCommand("r").setExecutor(new RCommand(this));
         
 
         Plugin vault = getServer().getPluginManager().getPlugin("Vault");
@@ -77,12 +73,6 @@ public class BukkitPlugin extends JavaPlugin {
         return "";
     }
     
-    public void setReply(UUID user, UUID replyTo) {
-        if (replyTarget.containsKey(user)) replyTarget.remove(user);
-        
-        replyTarget.put(user, replyTo);
-    }
-
     public void sendPrivateMessage(String target, String from, String mensaje) throws IOException {
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(b);
