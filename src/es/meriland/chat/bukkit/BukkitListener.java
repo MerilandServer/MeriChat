@@ -25,7 +25,7 @@ public class BukkitListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) return;
         
-        String texto = MeriChat.SINTAXIS + event.getMessage();
+        String texto = MeriChat.SINTAXIS + "\u00A8" + event.getMessage();
         try {
             processChatMessage(event.getPlayer(), texto);
         } catch (IOException ex) {
@@ -38,7 +38,7 @@ public class BukkitListener implements Listener {
     @EventHandler
     public void onDisconnect(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        if (BukkitPlugin.replyTarget.containsKey(uuid)) BukkitPlugin.replyTarget.remove(uuid);
+        if (bukkitPlugin.replyTarget.containsKey(uuid)) bukkitPlugin.replyTarget.remove(uuid);
     }
     
     private void processChatMessage(Player player, String text) throws IOException {

@@ -20,7 +20,7 @@ public class RCommand implements CommandExecutor {
     }
 
     public UUID getReplyTarget(UUID player){
-        UUID target = BukkitPlugin.replyTarget.get(player);
+        UUID target = plugin.replyTarget.get(player);
         if(target == null){
             return null;
         }
@@ -53,7 +53,7 @@ public class RCommand implements CommandExecutor {
         
         try {
             plugin.sendPrivateMessage(plugin.getServer().getOfflinePlayer(target).getName(), p.getName(), mensaje);
-            BukkitPlugin.setReply(target, p.getUniqueId());  
+            plugin.setReply(target, p.getUniqueId());  
         } catch (IOException ex) {
             sender.sendMessage("Ha ocurrido un error enviando el mensaje");
             plugin.getLogger().log(Level.INFO, "Error enviando un mensaje privado: {0}", ex.toString());

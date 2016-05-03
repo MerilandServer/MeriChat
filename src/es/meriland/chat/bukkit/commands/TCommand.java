@@ -20,12 +20,10 @@ public class TCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (args.length < 2) {
-            sender.sendMessage(ChatColor.LIGHT_PURPLE + "Usa /tell <Usuario> <Mensaje>!");
-            return true;
-        }
-
-        String target = args[0];
+        String target = "";
+        try {
+            target = args[0];
+        } catch (Exception ex) {}
         if (target.equals(sender.getName())) {
             sender.sendMessage(ChatColor.RED + "No puedes enviarte mensajes a ti mismo!");
             return true;
@@ -35,12 +33,12 @@ public class TCommand implements CommandExecutor {
         for (int i = 1; i < args.length; i++) {
             mensaje = mensaje + args[i] + " ";
         }
-
+        
         try {
             plugin.sendPrivateMessage(target, sender.getName(), mensaje);
             if (sender instanceof Player) {
                 Player p = (Player) sender;
-                BukkitPlugin.setReply(plugin.getServer().getOfflinePlayer(target).getUniqueId(), p.getUniqueId());
+                plugin.setReply(plugin.getServer().getOfflinePlayer(target).getUniqueId(), p.getUniqueId());
             }     
         } catch (IOException ex) {
             sender.sendMessage("Ha ocurrido un error enviando el mensaje");

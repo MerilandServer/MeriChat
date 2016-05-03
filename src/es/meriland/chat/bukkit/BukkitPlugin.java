@@ -6,6 +6,7 @@ import es.meriland.chat.bukkit.commands.TCommand;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
@@ -19,7 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class BukkitPlugin extends JavaPlugin {
 
-    public static final HashMap<UUID, UUID> replyTarget = new HashMap<>();
+    public final HashMap<UUID, UUID> replyTarget = new HashMap<>(); 
     private BukkitListener bukkitListener;
 
     public static Permission permission = null;
@@ -76,7 +77,7 @@ public class BukkitPlugin extends JavaPlugin {
         return "";
     }
     
-    public static void setReply(UUID user, UUID replyTo) {
+    public void setReply(UUID user, UUID replyTo) {
         if (replyTarget.containsKey(user)) replyTarget.remove(user);
         
         replyTarget.put(user, replyTo);
