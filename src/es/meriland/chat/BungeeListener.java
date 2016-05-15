@@ -88,9 +88,8 @@ public class BungeeListener implements Listener {
     }
     
     public void sendPrivateMessage(ProxiedPlayer target, ProxiedPlayer from, String mensaje) {
-        String msg = c("[&b" + from.getName() + " &f-> &e" + target.getName() + "&f]: &d" + mensaje);
-        target.sendMessage(Parser.parse(msg));
-        from.sendMessage(Parser.parse(msg));
+        target.sendMessage(Parser.parse(c("&6De " + from.getName() + ": &d" + mensaje)));
+        from.sendMessage(Parser.parse(c("&6A " + target.getName() + ": &d" + mensaje)));
         plugin.setReply(target.getUniqueId(), from.getUniqueId());
     }
     
