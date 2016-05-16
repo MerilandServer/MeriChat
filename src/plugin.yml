@@ -8,3 +8,5 @@ commands:
         aliases: ["w", "m", "msg"]
     r:
         aliases: ["reply"]
+    ignore:
+        aliases: ["ignora", "ignorar"]

@@ -1,8 +1,7 @@
 package es.meriland.chat.bukkit;
 
 import es.meriland.chat.MeriChat;
-import es.meriland.chat.bukkit.commands.RCommand;
-import es.meriland.chat.bukkit.commands.TCommand;
+import es.meriland.chat.bukkit.commands.*;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -29,6 +28,7 @@ public class BukkitPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(bukkitListener, this);
         getCommand("tell").setExecutor(new TCommand(this));
         getCommand("r").setExecutor(new RCommand(this));
+        getCommand("ignore").setExecutor(new IgnoreCommand(this));
         
 
         Plugin vault = getServer().getPluginManager().getPlugin("Vault");
@@ -80,6 +80,18 @@ public class BukkitPlugin extends JavaPlugin {
         out.writeUTF(target);
         out.writeUTF(from);
         out.writeUTF(mensaje);
+
+        Collection<? extends Player> c = Bukkit.getOnlinePlayers(); //Usar jugador falso
+        Player p = (Player) c.toArray()[0];
+        p.sendPluginMessage(this, MeriChat.MAIN_CHANNEL, b.toByteArray());
+    }
+    
+    public void ignore(String target, String from) throws IOException {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(b);
+        out.writeUTF(MeriChat.IGNORE_SUBCHANNEL);
+        out.writeUTF(target);
+        out.writeUTF(from);
 
         Collection<? extends Player> c = Bukkit.getOnlinePlayers(); //Usar jugador falso
         Player p = (Player) c.toArray()[0];
