@@ -38,7 +38,8 @@ public class BungeeListener implements Listener {
             BaseComponent[] msg = Parser.parse(mensaje);
 
             for (ProxiedPlayer target : plugin.getProxy().getPlayers()) {
-                if (plugin.ignoredPlayers.get(target.getUniqueId()) != null && plugin.ignoredPlayers.get(from.getUniqueId()).contains(target.getUniqueId())) return;
+                if (plugin.ignoredPlayers.get(target.getUniqueId()) != null && plugin.ignoredPlayers.get(target.getUniqueId()).contains(from.getUniqueId()))
+                    continue;
                
                 target.sendMessage(msg);
             }
@@ -74,7 +75,7 @@ public class BungeeListener implements Listener {
             return;
         }
         
-        if (plugin.ignoredPlayers.get(target.getUniqueId()) != null && plugin.ignoredPlayers.get(from.getUniqueId()).contains(target.getUniqueId())) {
+        if (plugin.ignoredPlayers.get(from.getUniqueId()) != null && plugin.ignoredPlayers.get(from.getUniqueId()).contains(target.getUniqueId())) {
             from.sendMessage(Parser.parse(c("&c¡No puedes hablar a un usuario al que has ignorado!")));
             return;
         }
@@ -101,7 +102,7 @@ public class BungeeListener implements Listener {
     public void sendPrivateMessage(ProxiedPlayer target, ProxiedPlayer from, String mensaje) {
         from.sendMessage(Parser.parse(c("&6A " + target.getName() + ": &d" + mensaje)));
         
-        if (plugin.ignoredPlayers.get(target.getUniqueId()) != null && plugin.ignoredPlayers.get(from.getUniqueId()).contains(target.getUniqueId())) return;
+        if (plugin.ignoredPlayers.get(target.getUniqueId()) != null && plugin.ignoredPlayers.get(target.getUniqueId()).contains(from.getUniqueId())) return;
         
         target.sendMessage(Parser.parse(c("&6De " + from.getName() + ": &d" + mensaje)));
         plugin.setReply(target.getUniqueId(), from.getUniqueId());
