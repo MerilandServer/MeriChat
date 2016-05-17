@@ -29,6 +29,7 @@ public class BukkitPlugin extends JavaPlugin {
         getCommand("tell").setExecutor(new TCommand(this));
         getCommand("r").setExecutor(new RCommand(this));
         getCommand("ignore").setExecutor(new IgnoreCommand(this));
+        getCommand("ignorados").setExecutor(new IgnoradosCommand(this));
         
 
         Plugin vault = getServer().getPluginManager().getPlugin("Vault");

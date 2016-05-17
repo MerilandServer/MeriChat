@@ -10,3 +10,5 @@ commands:
         aliases: ["reply"]
     ignore:
         aliases: ["ignora", "ignorar"]
+    ignorados:
+        aliases: ["ignored", "ignoredlist"]

@@ -135,6 +135,28 @@ public class BungeeListener implements Listener {
             plugin.saveIgnoredConf();
         } catch (IOException ex) {}
     }
+    
+    public void processIgnoreList(String pS) {
+        ProxiedPlayer p = plugin.getProxy().getPlayer(pS);
+        if (p == null) return;
+        
+        ArrayList<UUID> ignorados = plugin.ignoredPlayers.get(p.getUniqueId());
+        if (ignorados == null || ignorados.isEmpty()) {
+            p.sendMessage(Parser.parse(c("&aNo has ignorado a nadie")));
+            p.sendMessage(Parser.parse(c("&aUsa &e/ignore <usuario> &apara hacerlo")));
+            return;
+        }
+        
+        String usuarios = "";
+        usuarios = ignorados.stream()
+            .map(u -> plugin.getProxy().getPlayer(u).getName() + ", ")
+            .reduce(usuarios, String::concat);
+        
+        if (!"".equals(usuarios)) usuarios = usuarios.substring(0, usuarios.length() - 2);
+        
+        p.sendMessage(Parser.parse(c("&aUsuarios que están actualmente ignorados:")));
+        p.sendMessage(Parser.parse(c("&e" + usuarios)));
+    }
     /*
      * Recibir los packets de Bukkit con rangos y demás datos 
      */
@@ -157,6 +179,9 @@ public class BungeeListener implements Listener {
                             break;
                         case MeriChat.IGNORE_SUBCHANNEL:
                             processIgnore(in.readUTF(), in.readUTF());
+                            break;
+                        case MeriChat.IGNLIST_SUBCHANNEL:
+                            processIgnoreList(in.readUTF());
                             break;
                     }
                 } catch (IOException ex) {
