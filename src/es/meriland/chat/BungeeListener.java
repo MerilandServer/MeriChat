@@ -64,7 +64,7 @@ public class BungeeListener implements Listener {
         if (targetS.equals(MeriChat.CHAR + "reply")) {
             UUID targetId = plugin.replyTarget.get(from.getUniqueId());
             if(targetId == null){
-                from.sendMessage(Parser.parse(c("Nadie te ha enviado un mensaje!")));
+                from.sendMessage(Parser.parse(c("¡Nadie te ha enviado un mensaje! :(")));
                 return;
             }
             target = plugin.getProxy().getPlayer(targetId);
@@ -115,6 +115,11 @@ public class BungeeListener implements Listener {
         ProxiedPlayer target = plugin.getProxy().getPlayer(targetS);
         if (target == null) {
             from.sendMessage(Parser.parse(c("&c¡Jugador no encontrado!")));
+            return;
+        }
+        
+        if (target.getGroups().contains("admin") || target.getGroups().contains("tecnico") || target.getGroups().contains("moderador")) {
+            from.sendMessage(Parser.parse(c("&c¡No puedes ignorar a alguien del staff!")));
             return;
         }
         
