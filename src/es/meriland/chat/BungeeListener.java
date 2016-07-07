@@ -64,26 +64,26 @@ public class BungeeListener implements Listener {
         if (targetS.equals(MeriChat.CHAR + "reply")) {
             UUID targetId = plugin.replyTarget.get(from.getUniqueId());
             if(targetId == null){
-                from.sendMessage(Parser.parse(c("�Nadie te ha enviado un mensaje! :(")));
+                from.sendMessage(Parser.parse(c("¡Nadie te ha enviado un mensaje! :(")));
                 return;
             }
             target = plugin.getProxy().getPlayer(targetId);
         }
 
         if (target == null) {
-            from.sendMessage(Parser.parse(c("&c�Jugador no encontrado!")));
+            from.sendMessage(Parser.parse(c("&c¡Jugador no encontrado!")));
             return;
         }
 
         if (plugin.ignoredPlayers.get(from.getUniqueId()) != null && plugin.ignoredPlayers.get(from.getUniqueId()).contains(target.getUniqueId())) {
-            from.sendMessage(Parser.parse(c("&c�No puedes hablar a un usuario al que has ignorado!")));
+            from.sendMessage(Parser.parse(c("&c¡No puedes hablar a un usuario al que has ignorado!")));
             return;
         }
 
         if (mensaje.equals("")) { //Iniciar chat con target
             if (checkEndChat(from)) return;
             plugin.chatsActivados.put(from.getUniqueId(), target.getUniqueId());
-            from.sendMessage(Parser.parse("Has iniciado una conversaci�n privada con "+target.getName()));
+            from.sendMessage(Parser.parse("Has iniciado una conversación privada con "+target.getName()));
             return;
         }
         sendPrivateMessage(target, from, mensaje);
@@ -114,12 +114,12 @@ public class BungeeListener implements Listener {
 
         ProxiedPlayer target = plugin.getProxy().getPlayer(targetS);
         if (target == null) {
-            from.sendMessage(Parser.parse(c("&c�Jugador no encontrado!")));
+            from.sendMessage(Parser.parse(c("&c¡Jugador no encontrado!")));
             return;
         }
 
         if (target.getGroups().contains("admin") || target.getGroups().contains("tecnico") || target.getGroups().contains("moderador")) {
-            from.sendMessage(Parser.parse(c("&c�No puedes ignorar a alguien del staff!")));
+            from.sendMessage(Parser.parse(c("&c¡No puedes ignorar a alguien del staff!")));
             return;
         }
 
@@ -159,11 +159,11 @@ public class BungeeListener implements Listener {
 
         if (!"".equals(usuarios)) usuarios = usuarios.substring(0, usuarios.length() - 2);
 
-        p.sendMessage(Parser.parse(c("&aUsuarios que est�n actualmente ignorados:")));
+        p.sendMessage(Parser.parse(c("&aUsuarios que están actualmente ignorados:")));
         p.sendMessage(Parser.parse(c("&e" + usuarios)));
     }
     /*
-     * Recibir los packets de Bukkit con rangos y dem�s datos
+     * Recibir los packets de Bukkit con rangos y demás datos
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPluginMessage(PluginMessageEvent event) {
