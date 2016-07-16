@@ -64,19 +64,19 @@ public class BungeeListener implements Listener {
         if (targetS.equals(MeriChat.CHAR + "reply")) {
             UUID targetId = plugin.replyTarget.get(from.getUniqueId());
             if(targetId == null){
-                from.sendMessage(Parser.parse(c("Â¡Nadie te ha enviado un mensaje! :(")));
+                from.sendMessage(Parser.parse(c("¡Nadie te ha enviado un mensaje! :(")));
                 return;
             }
             target = plugin.getProxy().getPlayer(targetId);
         }
 
         if (target == null) {
-            from.sendMessage(Parser.parse(c("&cÂ¡Jugador no encontrado!")));
+            from.sendMessage(Parser.parse(c("&c¡Jugador no encontrado!")));
             return;
         }
 
         if (plugin.ignoredPlayers.get(from.getUniqueId()) != null && plugin.ignoredPlayers.get(from.getUniqueId()).contains(target.getUniqueId())) {
-            from.sendMessage(Parser.parse(c("&cÂ¡No puedes hablar a un usuario al que has ignorado!")));
+            from.sendMessage(Parser.parse(c("&c¡No puedes hablar a un usuario al que has ignorado!")));
             return;
         }
 
@@ -114,12 +114,12 @@ public class BungeeListener implements Listener {
 
         ProxiedPlayer target = plugin.getProxy().getPlayer(targetS);
         if (target == null) {
-            from.sendMessage(Parser.parse(c("&cÂ¡Jugador no encontrado!")));
+            from.sendMessage(Parser.parse(c("&c¡Jugador no encontrado!")));
             return;
         }
 
         if (target.getGroups().contains("admin") || target.getGroups().contains("tecnico") || target.getGroups().contains("moderador")) {
-            from.sendMessage(Parser.parse(c("&cÂ¡No puedes ignorar a alguien del staff!")));
+            from.sendMessage(Parser.parse(c("&c¡No puedes ignorar a alguien del staff!")));
             return;
         }
 
@@ -154,12 +154,15 @@ public class BungeeListener implements Listener {
 
         String usuarios = "";
         for (UUID val : ignorados) {
-            usuarios += plugin.getProxy().getPlayer(val).getName() + ", ";
+            ProxiedPlayer t = plugin.getProxy().getPlayer(val);
+            if (t != null) {
+                usuarios += plugin.getProxy().getPlayer(val).getName() + ", ";
+            }        
         }
 
         if (!"".equals(usuarios)) usuarios = usuarios.substring(0, usuarios.length() - 2);
 
-        p.sendMessage(Parser.parse(c("&aUsuarios que estÃ¡n actualmente ignorados:")));
+        p.sendMessage(Parser.parse(c("&aUsuarios que están actualmente ignorados:")));
         p.sendMessage(Parser.parse(c("&e" + usuarios)));
     }
     /*
