@@ -118,7 +118,7 @@ public class BungeeListener implements Listener {
             return;
         }
 
-        if (target.getGroups().contains("admin") || target.getGroups().contains("tecnico") || target.getGroups().contains("moderador")) {
+        if (target.getGroups().contains("staff") || target.getGroups().contains("tecnico") || target.getGroups().contains("tutor")) {
             from.sendMessage(Parser.parse(c("&c¡No puedes ignorar a alguien del staff!")));
             return;
         }

@@ -1,3 +1,5 @@
 /MeriChat/target/
 target/
 *.iml
+
+\.idea/
