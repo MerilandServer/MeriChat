@@ -1,14 +1,14 @@
 package es.meriland.chat.bukkit.commands;
 
-import es.meriland.chat.MeriChat;
 import es.meriland.chat.bukkit.BukkitPlugin;
-import java.io.IOException;
-import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.io.IOException;
+import java.util.logging.Level;
 
 public class IgnoreCommand implements CommandExecutor {
 
@@ -20,20 +20,20 @@ public class IgnoreCommand implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!(sender instanceof Player)){
+        if (!(sender instanceof Player)){
             sender.sendMessage("No puedes ignorar desde consola!");
             return true;
         }
         
         Player p = (Player) sender;
         
-        if(args.length == 0){
+        if (args.length == 0){
             sender.sendMessage("Usa /ignore <mensaje>");
             return true;
         }
         
         if (args[0].equals(sender.getName())) {
-            sender.sendMessage(ChatColor.RED + "¡No puedes ignorarte a ti mismo!");
+            sender.sendMessage(ChatColor.RED + "Â¡No puedes ignorarte a ti mismo!");
             return true;
         }
         

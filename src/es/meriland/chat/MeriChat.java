@@ -1,16 +1,16 @@
 package es.meriland.chat;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
-
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class MeriChat extends Plugin implements Listener {
 
@@ -59,8 +59,7 @@ public class MeriChat extends Plugin implements Listener {
     }
     
     public void setReply(UUID user, UUID replyTo) {
-        if (replyTarget.containsKey(user)) replyTarget.remove(user);
-        
+        replyTarget.remove(user);
         replyTarget.put(user, replyTo);
     }
     

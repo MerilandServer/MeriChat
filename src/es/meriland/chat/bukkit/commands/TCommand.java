@@ -1,12 +1,13 @@
 package es.meriland.chat.bukkit.commands;
 
 import es.meriland.chat.bukkit.BukkitPlugin;
-import java.io.IOException;
-import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import java.io.IOException;
+import java.util.logging.Level;
 
 public class TCommand implements CommandExecutor {
 
@@ -21,19 +22,19 @@ public class TCommand implements CommandExecutor {
         String target = "";
         try {
             target = args[0];
-        } catch (Exception ex) {}
+        } catch (Exception ignored) {}
         if (target.equals(sender.getName())) {
             sender.sendMessage(ChatColor.RED + "No puedes enviarte mensajes a ti mismo!");
             return true;
         }
 
-        String mensaje = "";
+        StringBuilder mensaje = new StringBuilder();
         for (int i = 1; i < args.length; i++) {
-            mensaje = mensaje + args[i] + " ";
+            mensaje.append(args[i]).append(" ");
         }
         
         try {
-            plugin.sendPrivateMessage(target, sender.getName(), mensaje); 
+            plugin.sendPrivateMessage(target, sender.getName(), mensaje.toString());
         } catch (IOException ex) {
             sender.sendMessage("Ha ocurrido un error enviando el mensaje");
             plugin.getLogger().log(Level.INFO, "Error enviando un mensaje privado: {0}", ex.toString());

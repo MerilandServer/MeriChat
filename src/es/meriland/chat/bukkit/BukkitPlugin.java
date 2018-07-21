@@ -1,11 +1,10 @@
 package es.meriland.chat.bukkit;
 
 import es.meriland.chat.MeriChat;
-import es.meriland.chat.bukkit.commands.*;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.Collection;
+import es.meriland.chat.bukkit.commands.IgnoradosCommand;
+import es.meriland.chat.bukkit.commands.IgnoreCommand;
+import es.meriland.chat.bukkit.commands.RCommand;
+import es.meriland.chat.bukkit.commands.TCommand;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -13,6 +12,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Collection;
 
 public class BukkitPlugin extends JavaPlugin {
  
