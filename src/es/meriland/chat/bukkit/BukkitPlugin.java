@@ -68,14 +68,14 @@ public class BukkitPlugin extends JavaPlugin {
         if (chat != null) {
             return chat.getPlayerPrefix(player);
         }
-        return "";
+        return "&r";
     }
 
     public String getSuffix(Player player) {
         if (chat != null) {
             return chat.getPlayerSuffix(player);
         }
-        return "";
+        return "&r";
     }
     
     public void sendPrivateMessage(String target, String from, String mensaje) throws IOException {

@@ -20,9 +20,8 @@ public class BukkitListener implements Listener {
         bukkitPlugin = instance;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        if (event.isCancelled()) return;
         
         String texto = MeriChat.SINTAXIS + MeriChat.CHAR + event.getMessage();
         try {
