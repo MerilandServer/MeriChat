@@ -3,103 +3,33 @@ package es.meriland.chat;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
 
+    // TODO: Revisar y mejorar la expressión
     private static final Pattern url = Pattern.compile("^(?:(https?)://)?([-\\w_.]{2,}\\.[a-z]{2,4})(/\\S*)?$");
 
-    public static BaseComponent[] parse(String message) {
-        ArrayList<BaseComponent> components = new ArrayList<>();
-        StringBuilder builder = new StringBuilder();
-        TextComponent component = new TextComponent();
-        Matcher matcher = url.matcher(message);
+    public static BaseComponent[] parse(boolean removeFirst, boolean allowColors, String... msg) {
+        return parse(new ComponentBuilder(), removeFirst, allowColors, msg);
+    }
 
-        for (int i = 0; i < message.length(); i++) {
-            char c = message.charAt(i);
-            if (c == ChatColor.COLOR_CHAR) {
-                i++;
-                c = message.charAt(i);
-                if (c >= 'A' && c <= 'Z') {
-                    c += 32;
-                }
-                ChatColor format = ChatColor.getByChar(c);
-                if (format == null) {
-                    continue;
-                }
-                if (builder.length() > 0) {
-                    TextComponent old = component;
-                    component = new TextComponent(old);
-                    old.setText(builder.toString());
-                    builder = new StringBuilder();
-                    components.add(old);
-                }
-                switch (format) {
-                    case BOLD:
-                        component.setBold(true);
-                        break;
-                    case ITALIC:
-                        component.setItalic(true);
-                        break;
-                    case UNDERLINE:
-                        component.setUnderlined(true);
-                        break;
-                    case STRIKETHROUGH:
-                        component.setStrikethrough(true);
-                        break;
-                    case MAGIC:
-                        component.setObfuscated(true);
-                        break;
-                    case RESET:
-                        format = ChatColor.WHITE;
-                    default:
-                        component = new TextComponent();
-                        component.setColor(format);
-                        break;
-                }
-                continue;
+    public static BaseComponent[] parse(ComponentBuilder builder, boolean removeFirst, boolean allowColors, String... msg) {
+        for (int i = removeFirst ? 1 : 0; i < msg.length; i++) {
+            if(url.matcher(msg[i]).find()) {
+                BaseComponent link = new TextComponent(msg[i]);
+                link.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, msg[i]));
+                builder.append(new TextComponent(" "), ComponentBuilder.FormatRetention.FORMATTING).append(link);
+            } else if (allowColors) {
+                builder.append(TextComponent.fromLegacyText(" " + ChatColor.translateAlternateColorCodes('&',msg[i])), ComponentBuilder.FormatRetention.FORMATTING);
+            } else {
+                builder.append(" " + msg[i], ComponentBuilder.FormatRetention.FORMATTING);
             }
-            int pos = message.indexOf(' ', i);
-            if (pos == -1) {
-                pos = message.length();
-            }
-            if (matcher.region(i, pos).find()) { //Web link handling
-
-                if (builder.length() > 0) {
-                    TextComponent old = component;
-                    component = new TextComponent(old);
-                    old.setText(builder.toString());
-                    builder = new StringBuilder();
-                    components.add(old);
-                }
-
-                TextComponent old = component;
-                component = new TextComponent(old);
-                String urlString = message.substring(i, pos);
-                component.setText(urlString);
-                component.setUnderlined(true);
-                component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
-                        urlString.startsWith("http") ? urlString : "http://" + urlString));
-                components.add(component);
-                i += pos - i - 1;
-                component = old;
-                continue;
-            }
-            builder.append(c);
-        }
-        if (builder.length() > 0) {
-            component.setText(builder.toString());
-            components.add(component);
         }
 
-        if (components.isEmpty()) {
-            components.add(new TextComponent(""));
-        }
-
-        return components.toArray(new BaseComponent[components.size()]);
+        return builder.create();
     }
 }

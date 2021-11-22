@@ -1,4 +1,6 @@
 name: ${project.artifactId}
 main : es.meriland.chat.MeriChat
 version: ${project.version}
-author: Cadiducho
+author: Cadiducho, Nestu
+depends:
+  - LuckPerms
