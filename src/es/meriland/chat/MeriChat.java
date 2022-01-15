@@ -1,5 +1,6 @@
 package es.meriland.chat;
 
+import es.meriland.chat.commands.AdminChatCMD;
 import es.meriland.chat.commands.ReplyCMD;
 import es.meriland.chat.commands.TellCMD;
 import es.meriland.chat.listeners.BungeeListener;
@@ -18,6 +19,9 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class MeriChat extends Plugin implements Listener {
+
+    public static final String MAIN_CHANNEL = "merichat:main";
+    public static final String MAIN_SUBCHANNEL = "merichat:chat";
     
     public static final HashMap<UUID, UUID> activeChats = new HashMap<>();
     public static final HashMap<UUID, UUID> replyTarget = new HashMap<>();
@@ -27,6 +31,8 @@ public class MeriChat extends Plugin implements Listener {
     @Override
     public void onEnable() {
         lpapi = LuckPermsProvider.get();
+
+        getProxy().registerChannel(MAIN_CHANNEL);
 
         getProxy().getPluginManager().registerListener(this, new BungeeListener(this));
 
@@ -91,6 +97,22 @@ public class MeriChat extends Plugin implements Listener {
 
         replyTarget.put(target.getUniqueId(), from.getUniqueId());
         replyTarget.put(from.getUniqueId(), target.getUniqueId());
+    }
+
+    public void processAdminMessage(ProxiedPlayer from, String... msg) {
+        ComponentBuilder builder = new ComponentBuilder();
+
+        CachedMetaData sender = lpapi.getPlayerAdapter(ProxiedPlayer.class).getMetaData(from);
+
+        builder.append(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&',"&7[&6Staff&7] &b" + from.getDisplayName() + "&r" + ":")));
+
+        BaseComponent[] message = Parser.parse(false, true, msg);
+        message[0].setColor(ChatColor.GREEN);
+
+        BaseComponent[] msgc = builder.append(message, ComponentBuilder.FormatRetention.FORMATTING).create();
+        for (ProxiedPlayer target : getProxy().getPlayers()) {
+            if (target.hasPermission("chat.adminchat")) target.sendMessage(msgc);
+        }
     }
 
     public void promptInfo(ProxiedPlayer player, String txt) {

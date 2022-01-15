@@ -1,0 +1,5 @@
+name: ${project.artifactId}
+main: es.meriland.chat.BukkitBridge
+version: ${project.version}
+author: Nestu
+api-version: 1.18
